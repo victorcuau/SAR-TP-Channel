@@ -1,12 +1,12 @@
 
 public class Channel {
 	
-	public String buffer[]; // Buffer in which the process have to read
-	public int read_head;
-	public int write_head;
-	public int bufSize;
-	public int nbElem;
-	public boolean close;
+	public String buffer[];	// Buffer in which the process have to read
+	public int read_head;		// Index of the next byte to read
+	public int write_head;	// Index of the next byte to write
+	public int bufSize;			// Maximum number of bytes store in the buffer
+	public int nbElem;			// Number of bytes currently store in the buffer
+	public boolean close;		// True if the buffer is close (can't write more)
 	
 	
 	protected Channel(){
