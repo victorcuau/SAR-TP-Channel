@@ -24,7 +24,7 @@ public class Channel {
 	 * of bytes read. Returns -1 if the channel is closed. ---> On peut lire même si
 	 * la Channel est fermée, donc pourquoi ?
 	 */
-	public int read(byte[] bytes, int offset, int length) throws InterruptedException {
+	public synchronized int read(byte[] bytes, int offset, int length) throws InterruptedException {
 		while (!(this.nbElem > 0)) {
 			wait();
 		}
@@ -50,7 +50,7 @@ public class Channel {
 	 * given offset. Blocks if there is no room to write available bytes. Otherwise,
 	 * returns the number of bytes written. Returns -1 if the channel is closed.
 	 */
-	public int write(byte[] bytes, int offset, int length) throws InterruptedException {
+	public synchronized int write(byte[] bytes, int offset, int length) throws InterruptedException {
 	// TODO : Ajouter vérification du close sur le buffer d'en face
 		while (!(this.nbElem < this.bufSize)) {
 			wait();

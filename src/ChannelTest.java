@@ -13,12 +13,14 @@ public class ChannelTest {
 		for (int i = 1 ; i <= nbProcess ; i++) {
 			Process p = new Process("P" + i); // Create the process
 			this.registry.put(p.name, p); // Add the process to the registry
+			System.out.println("Create process " + p.name);
 		}
 		
 		for (int i = 1 ; i <= nbProcess ; i++) {
 			Process p = this.registry.get("P" + i);
 			p.set_registry(registry); // Give the complete registry to the process
 			p.setDaemon(true);
+			p.start();
 		}
 	}
 	
