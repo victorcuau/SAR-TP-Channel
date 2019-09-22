@@ -25,11 +25,11 @@ public class Process extends Thread {
 	protected synchronized Channel accept(int port) throws InterruptedException {
 		System.out.println("Process " + this.name + " is waiting for a connexion request on port " + port);
 
-		while (!connexion_request.containsKey(port)) { // While there is no connexion request on this port
+		while (!this.connexion_request.containsKey(port)) { // While there is no connexion request on this port
 			wait();
 		}
 
-		connexion_request.remove(port);
+		this.connexion_request.remove(port);
 		notifyAll();
 		Channel c = new Channel();
 		list.put(port, c); // Add the port and the associate Channel to the list of used ports
@@ -57,11 +57,10 @@ public class Process extends Thread {
 
 		// Subscribe to the list of connexion requests on the distant Process
 		p.connexion_request.put(port, this);
-		p.notify();
+		this.notify();
 
-		// Wait until the distant Process remove it from the list (meaning that it will
-		// accept the connexion)
-		while (this.connexion_request.containsKey(port)) {
+		// Wait until the distant Process remove it from the list (meaning that it will accept the connexion)
+		while (p.connexion_request.containsKey(port)) {
 			wait();
 		}
 
@@ -74,7 +73,7 @@ public class Process extends Thread {
 		}
 		list.put(my_port, c); // Add the port and the associate Channel to the list of used ports
 
-		System.out.println("Process " + this.name + " is connected to " + name + ":" + port);
+		System.out.println("Process " + this.name + " is connected to " + name + ":" + port + " on port " + my_port);
 
 		return c;
 	}
@@ -87,22 +86,22 @@ public class Process extends Thread {
 		this.registry = registry;
 	}
 
-	public void run() {
-		try {
-			for (int i = 0 ; i < 3 ; i++) {
-				this.accept(new Random().nextInt(8));
-				
-				String host;
-				if (this.name == "P1"){
-						host = "P2";
-				} else {
-					host = "P1";
-				}
-				this.connect(host, new Random().nextInt(8));
-			}
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+//	public void run() {
+//		try {
+//			for (int i = 0 ; i < 3 ; i++) {
+//				this.accept(new Random().nextInt(8));
+//				
+//				String host;
+//				if (this.name == "P1"){
+//						host = "P2";
+//				} else {
+//					host = "P1";
+//				}
+//				this.connect(host, new Random().nextInt(8));
+//			}
+//		} catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//	}
 }
