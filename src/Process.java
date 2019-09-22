@@ -86,22 +86,4 @@ public class Process extends Thread {
 		this.registry = registry;
 	}
 
-//	public void run() {
-//		try {
-//			for (int i = 0 ; i < 3 ; i++) {
-//				this.accept(new Random().nextInt(8));
-//				
-//				String host;
-//				if (this.name == "P1"){
-//						host = "P2";
-//				} else {
-//					host = "P1";
-//				}
-//				this.connect(host, new Random().nextInt(8));
-//			}
-//		} catch (InterruptedException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//	}
 }

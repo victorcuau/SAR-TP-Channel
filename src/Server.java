@@ -9,11 +9,10 @@ public class Server extends Process {
 	
 	public void run() {
 		try {
-			for (int i = 0 ; i < 3 ; i++) {
+			for (int i = 0 ; i < 2 ; i++) {
 				this.accept(new Random().nextInt(3));
 			}
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
