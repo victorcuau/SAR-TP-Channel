@@ -23,18 +23,30 @@ public class Process extends Thread {
 	 * any thread, but for different ports.
 	 */
 	protected synchronized Channel accept(int port) throws InterruptedException {
+		// Can't do an accept() on a port that is already used. In this case, raise an exception.
+		if (this.list.containsKey(port)) {
+			throw new InterruptedException("Port " + port + "is already used on process " + this.name);
+		}
+		
 		System.out.println("Process " + this.name + " is waiting for a connexion request on port " + port);
 
-		while (!this.connexion_request.containsKey(port)) { // While there is no connexion request on this port
+	  // While there is no connexion request on this port
+		while (!this.connexion_request.containsKey(port)) {
+			System.out.println("   " + this.name + " wait()");
 			wait();
+			System.out.println("   " + this.name + " wake up");
 		}
 
+		Process p = this.connexion_request.get(port);
 		this.connexion_request.remove(port);
-		notifyAll();
+		synchronized (p) {
+			System.out.println("   " + this.name + " notifyAll()");
+			p.notifyAll();
+		}
 		Channel c = new Channel();
 		list.put(port, c); // Add the port and the associate Channel to the list of used ports
 
-		System.out.println("Process " + this.name + " is connected to someone on port " + port);
+		System.out.println("Process " + this.name + " is connected to " + p.name + ":" + port);
 
 		return c;
 	}
@@ -51,17 +63,24 @@ public class Process extends Thread {
 
 		// Wait until the distant Process exists
 		while (!this.registry.containsKey(name)) {
+			System.out.println("   " + this.name + " wait()");
 			wait();
+			System.out.println("   " + this.name + " wake up");
 		}
 		Process p = this.registry.get(name);
 
 		// Subscribe to the list of connexion requests on the distant Process
 		p.connexion_request.put(port, this);
-		this.notify();
-
+		synchronized (p) {
+			System.out.println("   " + this.name + " notify()");
+			p.notifyAll();
+		}
+		
 		// Wait until the distant Process remove it from the list (meaning that it will accept the connexion)
 		while (p.connexion_request.containsKey(port)) {
+			System.out.println("   " + this.name + " wait()");
 			wait();
+			System.out.println("   " + this.name + " wake up");
 		}
 
 		Channel c = new Channel();
