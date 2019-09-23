@@ -1,6 +1,5 @@
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 
 public class Process extends Thread {
 
@@ -43,7 +42,7 @@ public class Process extends Thread {
 			System.out.println("   " + this.name + " notifyAll()");
 			p.notifyAll();
 		}
-		Channel c = new Channel();
+		Channel c = new Channel(p, port);
 		list.put(port, c); // Add the port and the associate Channel to the list of used ports
 
 		System.out.println("Process " + this.name + " is connected to " + p.name + ":" + port);
@@ -83,13 +82,12 @@ public class Process extends Thread {
 			System.out.println("   " + this.name + " wake up");
 		}
 
-		Channel c = new Channel();
-
 		// Choose the port to use on THIS Process
 		int my_port = 1;
 		while (this.list.containsKey(my_port) | this.connexion_request.containsKey(my_port)) {
 			my_port++;
 		}
+		Channel c = new Channel(p, my_port);
 		list.put(my_port, c); // Add the port and the associate Channel to the list of used ports
 
 		System.out.println("Process " + this.name + " is connected to " + name + ":" + port + " on port " + my_port);

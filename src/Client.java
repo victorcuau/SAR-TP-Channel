@@ -4,7 +4,6 @@ public class Client extends Process {
 
 	protected Client(String name) {
 		super(name);
-		// TODO Auto-generated constructor stub
 	}
 
 	public void run() {
@@ -15,7 +14,15 @@ public class Client extends Process {
 				String host;
 				host = "P" + new Random().nextInt(this.registry.size());
 				
-				this.connect(host, new Random().nextInt(3));
+				// Connexion request
+				int port = new Random().nextInt(2);
+				Channel c = this.connect(host, port);
+				
+				// Write something on the channel
+				byte[] tab = new byte[1];
+				tab[0] = 1;
+				int nbWrite = c.write(tab, 0, 1);
+				System.out.println("Process " + this.name + " have write " + nbWrite + " byte(s)");
 				
 			}
 		} catch (InterruptedException e) {
