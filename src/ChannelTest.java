@@ -6,26 +6,26 @@ import java.util.Map;
 public class ChannelTest {
 	
 	Map<String, Process> registry = new HashMap<String, Process>();
-	private int nbProcess = 4; // Number of process to create and run simultaneously
+	private int nbProcess = 6; // Number of process to create and run simultaneously (/2)
 	
 	
 	public void start() throws InvalidPropertiesFormatException, IOException {
+		
+		// Creation of the processes
 		for (int i = 0 ; i < nbProcess ; i++) {
-			Server s = new Server("P" + i++); // Create the process
-			this.registry.put(s.name, s); // Add the process to the registry
-			System.out.println("Create process " + s.name);
-			
-			Client c = new Client("P" + i); // Create the process
-			this.registry.put(c.name, c); // Add the process to the registry
-			System.out.println("Create process " + c.name);
+			Process p = new Process("P" + i); // Create the process
+			this.registry.put(p.name, p); // Add the process to the registry
+			System.out.println("Create process " + p.name);
 		}
 		
+		// Share the registry with the process and launch it with accept
 		for (int i = 0 ; i < nbProcess ; i++) {
-			Process s = this.registry.get("P" + i);
-			s.set_registry(registry); // Give the complete registry to the process
-			s.setDaemon(true);
-			s.start();
-		}
+			Process p = this.registry.get("P" + i);
+			p.set_registry(registry); // Give the complete registry to the process
+			p.setDaemon(true);
+			p.start();
+		}	
+		
 	}
 	
 	

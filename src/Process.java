@@ -1,5 +1,7 @@
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 public class Process extends Thread {
 
@@ -7,7 +9,8 @@ public class Process extends Thread {
 	Map<String, Process>	registry					= new HashMap<String, Process>();
 	Map<Integer, Channel>	list							= new HashMap<Integer, Channel>();	// Associate each used port to the Channel
 	Map<Integer, Process>	connexion_request	= new HashMap<Integer, Process>();	// Associate each port that have receive a connexion request with the Process that asked for
-
+	public int						my_port						= 1;
+	
 	/*
 	 * Constructor, given name must be uniquely
 	 */
@@ -42,10 +45,10 @@ public class Process extends Thread {
 			System.out.println("   " + this.name + " notifyAll()");
 			p.notifyAll();
 		}
-		Channel c = new Channel(p, port);
+		Channel c = new Channel(p, p.my_port);
 		list.put(port, c); // Add the port and the associate Channel to the list of used ports
 
-		System.out.println("Process " + this.name + " is connected to " + p.name + ":" + port);
+		System.out.println("Process " + this.name + " is connected to " + p.name + ":" + p.my_port + " on port " + port);
 
 		return c;
 	}
@@ -83,14 +86,13 @@ public class Process extends Thread {
 		}
 
 		// Choose the port to use on THIS Process
-		int my_port = 1;
-		while (this.list.containsKey(my_port) | this.connexion_request.containsKey(my_port)) {
-			my_port++;
+		while (this.list.containsKey(this.my_port) | this.connexion_request.containsKey(this.my_port)) {
+			this.my_port++;
 		}
-		Channel c = new Channel(p, my_port);
-		list.put(my_port, c); // Add the port and the associate Channel to the list of used ports
+		Channel c = new Channel(p, port);
+		list.put(this.my_port, c); // Add the port and the associate Channel to the list of used ports
 
-		System.out.println("Process " + this.name + " is connected to " + name + ":" + port + " on port " + my_port);
+		System.out.println("Process " + this.name + " is connected to " + name + ":" + port + " on port " + this.my_port);
 
 		return c;
 	}
@@ -101,6 +103,31 @@ public class Process extends Thread {
 	 */
 	public void set_registry(Map<String, Process> registry) {
 		this.registry = registry;
+	}
+	
+	
+	public void run() {
+		int number = Integer.parseInt(this.name.substring(1));
+		
+		if (number%2 == 0) {
+			try {
+				Channel c = this.accept(new Random().nextInt(2));
+				
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		else {
+			String host;
+			host = "P" + new Random().nextInt(this.registry.size());
+			try {
+				Channel c = this.connect(host, new Random().nextInt(2));
+				
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 }
