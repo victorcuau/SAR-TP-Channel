@@ -118,6 +118,8 @@ public class Process extends Thread {
 				int nbRead = c.read(tab, 0, 3);
 				System.out.println("Process " + this.name + " have read " + nbRead + " byte(s)");
 				
+				c.close();
+				
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -136,6 +138,8 @@ public class Process extends Thread {
 				tab[2] = 3;
 				int nbWrite = c.write(tab, 0, 3);
 				System.out.println("Process " + this.name + " have write " + nbWrite + " byte(s)");
+				
+				c.close();
 				
 			} catch (InterruptedException e) {
 				e.printStackTrace();
