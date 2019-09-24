@@ -113,6 +113,11 @@ public class Process extends Thread {
 			try {
 				Channel c = this.accept(new Random().nextInt(2));
 				
+				// Read something on the channel
+				byte[] tab = new byte[3];
+				int nbRead = c.read(tab, 0, 3);
+				System.out.println("Process " + this.name + " have read " + nbRead + " byte(s)");
+				
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -123,6 +128,14 @@ public class Process extends Thread {
 			host = "P" + new Random().nextInt(this.registry.size());
 			try {
 				Channel c = this.connect(host, new Random().nextInt(2));
+				
+				// Write something on the channel
+				byte[] tab = new byte[3];
+				tab[0] = 1;
+				tab[1] = 2;
+				tab[2] = 3;
+				int nbWrite = c.write(tab, 0, 3);
+				System.out.println("Process " + this.name + " have write " + nbWrite + " byte(s)");
 				
 			} catch (InterruptedException e) {
 				e.printStackTrace();
